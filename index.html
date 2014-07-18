@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Chatbuilder</title>
+    <script src="http://chatbuilder.hackreactor.com/ChatBuilder.js"></script>
+    <style media="screen" type="text/css">
+
+      ul{
+        font-family: "Helvetica";
+        font-color:#f7eac6;
+        list-style: none;
+      }
+
+      div.container{
+        background-color:#00db98;
+        min-height: 200px;
+        width:500px;
+      }
+
+      body{
+        background-color:#f7eac6;
+      }
+
+
+    </style>
+  </head>
+  <body>
+
+    <script>
+
+      Chat.guide.start();
+
+      // Your JavaScript code will go right here!
+      $(document).ready(function(){
+
+        delete Chat.display;
+        delete Chat.fetch;
+        delete Chat.send;
+
+        setInterval(myRefresh,3000);
+
+        //Smart Event Listener for Input Form and Submit Button
+        $("button.send, input.draft").on("keypress click", function(event){
+          if ((event.which === 13 && $("input.draft").val() != '') || (event.type === 'click' && event.target == "input.draft")) {
+            mySend($("input.draft").val());
+            $("input.draft").val('');
+          };
+        });        
+
+        //Removes old messages, fetches and formats new messages, runs every three seconds in a setInterval
+        function myRefresh(){
+          $(".messages li").remove();
+          myFetch(formatMessages);
+          console.log($(".messages li").length);
+          if ($(".messages ul").children.length == 11){
+            $(".messages li:last").remove();
+          };
+        };
+
+        function formatMessages(message){
+          $(".messages").append("<li>"+message+"</li>");
+        };
+
+        //Fetches an object and extracts information. The object has a single property, "results". "results" is an array of hashes containing the message and metadata.
+        function myFetch(){
+          $.get("https://api.parse.com/1/classes/chats",function(data){
+            console.log(data);
+            $.each(data.results, function(key,value){
+              formatMessages(value.text);
+            });
+          });
+        };
+
+        //Stringifys the content of input field, concatenates with the username, and sends to the chatbuilder API endpoint
+        function mySend(message){
+          $.post("https://api.parse.com/1/classes/chats",JSON.stringify({text:Chat.username+": "+$("input.draft").val()}));
+        };
+
+      });
+      
+    </script>
+    <div class="header">
+      <h2>Jeff Gladchun Hack Reactor Interview</h2>
+      <h3>jglad.ch</h3>
+    </div>
+
+    <input class="draft" type="text"/> <button class="send">Send</button>
+    <div class="container">
+      <ul class="messages">
+      </ul>
+    </div>
+  </body>
+</html>
