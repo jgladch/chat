@@ -54,8 +54,11 @@
           myFetch(formatMessages);
         };
 
+        //Adds up to 10 children <li> to the .messages <ul>
         function formatMessages(message){
-          $(".messages").append("<li>"+message+"</li>");
+          if ($(".messages li").length < 10) {
+            $(".messages").append("<li>"+message+"</li>");
+          };
         };
 
         //Fetches an object and extracts information. The object has a single property, "results". "results" is an array of hashes containing the message and metadata.
