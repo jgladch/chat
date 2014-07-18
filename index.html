@@ -52,10 +52,6 @@
         function myRefresh(){
           $(".messages li").remove();
           myFetch(formatMessages);
-          console.log($(".messages li").length);
-          if ($(".messages ul").children.length == 11){
-            $(".messages li:last").remove();
-          };
         };
 
         function formatMessages(message){
