@@ -24,6 +24,7 @@
 
 
     </style>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
   </head>
   <body>
 
@@ -56,15 +57,15 @@
 
         //Adds up to 10 children <li> to the .messages <ul>
         function formatMessages(message){
-          if ($(".messages li").length < 10) {
             $(".messages").append("<li>"+message+"</li>");
-          };
         };
 
         //Fetches an object and extracts information. The object has a single property, "results". "results" is an array of hashes containing the message and metadata.
         function myFetch(){
           $.get("https://api.parse.com/1/classes/chats",function(data){
-            console.log(data);
+            if (data.results.length > 10) {
+              data.results.shift()
+            };
             $.each(data.results, function(key,value){
               formatMessages(value.text);
             });
